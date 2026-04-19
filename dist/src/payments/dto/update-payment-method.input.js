@@ -22,7 +22,8 @@ let UpdatePaymentMethodInput = class UpdatePaymentMethodInput {
 exports.UpdatePaymentMethodInput = UpdatePaymentMethodInput;
 __decorate([
     (0, graphql_1.Field)(() => graphql_1.ID),
-    (0, class_validator_1.IsUUID)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MinLength)(1),
     __metadata("design:type", String)
 ], UpdatePaymentMethodInput.prototype, "id", void 0);
 __decorate([

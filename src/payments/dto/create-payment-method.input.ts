@@ -1,11 +1,12 @@
 import { Field, ID, InputType } from '@nestjs/graphql';
 import { Country } from '@prisma/client';
-import { IsBoolean, IsEnum, IsOptional, IsString, IsUUID, Length } from 'class-validator';
+import { IsBoolean, IsEnum, IsOptional, IsString, Length, MinLength } from 'class-validator';
 
 @InputType()
 export class CreatePaymentMethodInput {
   @Field(() => ID)
-  @IsUUID()
+  @IsString()
+  @MinLength(1)
   userId!: string;
 
   @Field()

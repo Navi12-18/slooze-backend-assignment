@@ -10,7 +10,7 @@ flowchart LR
   Apollo --> Resolvers
   Resolvers --> Services
   Services --> Prisma
-  Prisma --> SQLite[(SQLite)]
+  Prisma --> Postgres[(PostgreSQL)]
   JwtAuthGuard --> Resolvers
   RolesGuard --> Resolvers
 ```
@@ -51,4 +51,4 @@ flowchart LR
 
 - Passwords hashed with **bcrypt** in seed and compared in `AuthService`.
 - JWT payload refreshed from the database on each request in `JwtStrategy.validate` so role/country changes take effect without relying only on stale token claims.
-- Production: use a strong `JWT_SECRET`, HTTPS, and a managed database instead of SQLite if required.
+- Production: use a strong `JWT_SECRET`, HTTPS, and a managed PostgreSQL instance with appropriate network access controls.

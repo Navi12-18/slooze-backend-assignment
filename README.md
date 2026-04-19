@@ -1,6 +1,6 @@
 # Slooze assignment — backend
 
-NestJS **GraphQL** API for a food-ordering demo: **JWT** authentication, **RBAC** (Admin / Manager / Member), and **country-scoped** data (India vs America), backed by **Prisma** and **SQLite**.
+NestJS **GraphQL** API for a food-ordering demo: **JWT** authentication, **RBAC** (Admin / Manager / Member), and **country-scoped** data (India vs America), backed by **Prisma** and **PostgreSQL**.
 
 **GraphQL:** `http://localhost:3000/graphql` (Apollo Sandbox in the browser, or any GraphQL HTTP client). Visiting **`http://localhost:3000/`** redirects to `/graphql`.
 
@@ -22,7 +22,15 @@ NestJS **GraphQL** API for a food-ordering demo: **JWT** authentication, **RBAC*
 
 ## Quick start
 
-**Prerequisites:** Node.js 20+ and npm.
+**Prerequisites:** Node.js 20+ and npm, and a **PostgreSQL** instance (local or hosted).
+
+**Local database (recommended):** from the project root, start Postgres with Docker:
+
+```bash
+docker compose up -d
+```
+
+Then copy `.env.example` to `.env` (or create `.env`) and ensure `DATABASE_URL` matches your database. The default in `.env.example` matches `docker-compose.yml` (`postgres` / `postgres` / database `slooze` on port `5432`).
 
 ```bash
 npm install
@@ -35,7 +43,7 @@ npm run start:dev
 **Environment** — create or edit `.env` in the project root:
 
 ```env
-DATABASE_URL="file:./dev.db"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/slooze?schema=public"
 JWT_SECRET="your-long-random-secret"
 PORT=3000
 ```
@@ -433,15 +441,15 @@ Or use the script: **`npm run start:prod`** (runs `node dist/main`). Set **`PORT
 | `PORT` | No | Defaults to `3000` |
 | `NODE_ENV` | No | Set to `production` on real hosts |
 
-### SQLite vs PostgreSQL
+### Database (PostgreSQL)
 
-The default **`file:./dev.db`** SQLite file is fine for **local demos**. On most **PaaS** containers (Render, Railway, Fly.io, etc.), the filesystem is **ephemeral** — the DB can disappear on redeploy. For a **hosted** demo you should:
+The app uses **`provider = "postgresql"`** in `prisma/schema.prisma`. For **local** development, use **`docker compose up -d`** (see [Quick start](#quick-start)) or any Postgres you already run.
 
-1. Create a **PostgreSQL** database (free tiers exist on Neon, Supabase, Railway, Render, etc.).
-2. Point **`DATABASE_URL`** at it (see [Prisma Postgres connection strings](https://www.prisma.io/docs/orm/reference/connection-urls)).
-3. In `prisma/schema.prisma`, switch `provider` from `sqlite` to `postgresql`, run `npx prisma migrate dev` locally to create a Postgres migration, then deploy with `npx prisma migrate deploy` on the server.
+For **hosted** demos (Render, Railway, Fly.io, Neon, etc.):
 
-Until you switch providers, you can still host a **stateless smoke test** that resets on each deploy — not ideal for persistent data.
+1. Create a **PostgreSQL** database and copy its connection string.
+2. Set **`DATABASE_URL`** in the host’s environment (see [Prisma Postgres connection strings](https://www.prisma.io/docs/orm/reference/connection-urls)).
+3. Run **`npx prisma migrate deploy`** on deploy (or equivalent release command) so the schema is applied.
 
 ### Where to deploy (examples)
 
@@ -477,6 +485,7 @@ For the assignment, a **public URL** plus short **demo video** is usually enough
 | Resource | |
 |----------|--|
 | Architecture | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) |
+| **All GraphQL ops (copy-paste)** | [`docs/GRAPHQL_COPY_PASTE.md`](docs/GRAPHQL_COPY_PASTE.md) |
 | Postman | [`postman/slooze-graphql.postman_collection.json`](postman/slooze-graphql.postman_collection.json) |
 
 | Script | Description |
@@ -488,4 +497,4 @@ For the assignment, a **public URL** plus short **demo video** is usually enough
 | `npm test` | Unit tests |
 | `npm run test:e2e` | E2E smoke |
 
-**Stack:** NestJS, GraphQL (code-first), Apollo Server, Prisma 6, SQLite, Passport JWT, bcrypt.
+**Stack:** NestJS, GraphQL (code-first), Apollo Server, Prisma 6, PostgreSQL, Passport JWT, bcrypt.
