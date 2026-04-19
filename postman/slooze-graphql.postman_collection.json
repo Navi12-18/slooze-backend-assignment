@@ -1,0 +1,84 @@
+{
+  "info": {
+    "name": "Slooze GraphQL API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "token", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "login (Thanos)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/graphql",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"query\": \"mutation($i: LoginInput!) { login(input: $i) { accessToken } }\",\n  \"variables\": {\n    \"i\": {\n      \"email\": \"thanos@slooze.test\",\n      \"password\": \"SloozeDemo#2026\"\n    }\n  }\n}"
+        }
+      }
+    },
+    {
+      "name": "me",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": "{{baseUrl}}/graphql",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"query\": \"query { me { id email displayName role country } }\"\n}"
+        }
+      }
+    },
+    {
+      "name": "restaurants",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": "{{baseUrl}}/graphql",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"query\": \"query { restaurants { id name country city menuItems { id name priceCents } } }\"\n}"
+        }
+      }
+    },
+    {
+      "name": "addToCart",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": "{{baseUrl}}/graphql",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"query\": \"mutation($i: AddToCartInput!) { addToCart(input: $i) { id status country lines { quantity unitPriceCents menuItem { name } } } }\",\n  \"variables\": {\n    \"i\": {\n      \"restaurantId\": \"REPLACE_RESTAURANT_ID\",\n      \"menuItemId\": \"REPLACE_MENU_ITEM_ID\",\n      \"quantity\": 1\n    }\n  }\n}"
+        }
+      }
+    },
+    {
+      "name": "checkout (Manager token)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": "{{baseUrl}}/graphql",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"query\": \"mutation($oid: ID!, $pm: ID!) { checkout(orderId: $oid, paymentMethodId: $pm) { id status } }\",\n  \"variables\": {\n    \"oid\": \"REPLACE_ORDER_ID\",\n    \"pm\": \"REPLACE_PAYMENT_METHOD_ID\"\n  }\n}"
+        }
+      }
+    }
+  ]
+}
